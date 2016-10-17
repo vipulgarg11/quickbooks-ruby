@@ -7,6 +7,7 @@ module Quickbooks
       PAYMENT_LINE_DETAIL = 'PaymentLineDetail'
       DISCOUNT_LINE_DETAIL = 'DiscountLineDetail'
       JOURNAL_ENTRY_LINE_DETAIL = 'JournalEntryLineDetail'
+      TDS_LINE_DETAIL = 'TDSLineDetail'
 
       xml_accessor :id, :from => 'Id'
       xml_accessor :line_num, :from => 'LineNum', :as => Integer
@@ -20,6 +21,7 @@ module Quickbooks
       xml_accessor :sub_total_line_detail, :from => 'SubTotalLineDetail', :as => SubTotalLineDetail
       xml_accessor :payment_line_detail, :from => 'PaymentLineDetail', :as => PaymentLineDetail
       xml_accessor :discount_line_detail, :from => 'DiscountLineDetail', :as => DiscountOverride
+      xml_accessor :tds_line_detail, :from => 'TDSLineDetail', :as => TdsLineDetail
       xml_accessor :journal_entry_line_detail, :from => 'JournalEntryLineDetail', :as => JournalEntryLineDetail
 
       def initialize(*args)
@@ -63,6 +65,13 @@ module Quickbooks
         self.discount_line_detail = DiscountLineDetail.new
 
         yield self.discount_line_detail if block_given?
+      end
+
+      def tds!
+        self.detail_type = TDS_LINE_DETAIL
+        self.tds_line_detail = TdsLineDetail.new
+
+        yield self.tds_line_detail if block_given?
       end
 
       def journal_entry!
