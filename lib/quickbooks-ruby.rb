@@ -47,6 +47,8 @@ require 'quickbooks/model/journal_entry_line_detail'
 require 'quickbooks/model/tds_line_detail'
 require 'quickbooks/model/line'
 require 'quickbooks/model/journal_entry'
+require 'quickbooks/model/item_group_line'
+require 'quickbooks/model/item_group_detail'
 require 'quickbooks/model/item'
 require 'quickbooks/model/budget_line_item'
 require 'quickbooks/model/budget'
@@ -62,6 +64,7 @@ require 'quickbooks/model/email_address'
 require 'quickbooks/model/web_site_address'
 require 'quickbooks/model/physical_address'
 require 'quickbooks/model/invoice_line_item'
+require 'quickbooks/model/invoice_group_line_detail'
 require 'quickbooks/model/name_value'
 require 'quickbooks/model/company_info'
 require 'quickbooks/model/customer'
@@ -77,6 +80,7 @@ require 'quickbooks/model/bill_payment_credit_card'
 require 'quickbooks/model/bill_payment'
 require 'quickbooks/model/vendor'
 require 'quickbooks/model/employee'
+require 'quickbooks/model/exchange_rate'
 require 'quickbooks/model/term'
 require 'quickbooks/model/markup_info'
 require 'quickbooks/model/group_line_detail'
@@ -98,10 +102,10 @@ require 'quickbooks/model/tax_agency'
 require 'quickbooks/model/tax_service'
 require 'quickbooks/model/tax_code'
 require 'quickbooks/model/fault'
+require 'quickbooks/model/refund_receipt'
 require 'quickbooks/model/batch_request'
 require 'quickbooks/model/batch_response'
 require 'quickbooks/model/preferences'
-require 'quickbooks/model/refund_receipt'
 require 'quickbooks/model/change_model'
 require 'quickbooks/model/invoice_change'
 require 'quickbooks/model/customer_change'
@@ -112,6 +116,7 @@ require 'quickbooks/model/credit_memo_change'
 require 'quickbooks/model/payment_change'
 require 'quickbooks/model/transfer'
 require 'quickbooks/model/change_data_capture'
+require 'quickbooks/model/refund_receipt_change'
 
 #== Services
 require 'quickbooks/service/service_crud'
@@ -126,6 +131,7 @@ require 'quickbooks/service/customer'
 require 'quickbooks/service/department'
 require 'quickbooks/service/invoice'
 require 'quickbooks/service/deposit'
+
 require 'quickbooks/service/item'
 require 'quickbooks/service/budget'
 require 'quickbooks/service/journal_entry'
@@ -137,6 +143,7 @@ require 'quickbooks/service/bill'
 require 'quickbooks/service/bill_payment'
 require 'quickbooks/service/vendor'
 require 'quickbooks/service/employee'
+require 'quickbooks/service/exchange_rate'
 require 'quickbooks/service/payment'
 require 'quickbooks/service/term'
 require 'quickbooks/service/time_activity'
@@ -163,6 +170,7 @@ require 'quickbooks/service/credit_memo_change'
 require 'quickbooks/service/payment_change'
 require 'quickbooks/service/transfer'
 require 'quickbooks/service/change_data_capture'
+require 'quickbooks/service/refund_receipt_change'
 
 module Quickbooks
   @@sandbox_mode = false
@@ -208,15 +216,18 @@ module Quickbooks
   end # << self
 
   class InvalidModelException < StandardError; end
-
   class AuthorizationFailure < StandardError; end
   class Forbidden < StandardError; end
-
+  class NotFound < StandardError; end
+  class RequestTooLarge < StandardError; end
+  class ThrottleExceeded < Forbidden; end
+  class TooManyRequests < StandardError; end
   class ServiceUnavailable < StandardError; end
   class MissingRealmError < StandardError; end
 
   class IntuitRequestException < StandardError
     attr_accessor :message, :code, :detail, :type, :request_xml, :request_json
+
     def initialize(msg)
       self.message = msg
       super(msg)

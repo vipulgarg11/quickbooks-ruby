@@ -1,3 +1,27 @@
+## 0.4.8 (2017-03-14)
+
+* Fixes from @cohendvir to resolve a regression in 0.4.7
+
+## 0.4.7 (2017-03-07)
+
+* add entity as reference - pull request #365 from @cohendvir - thank you!
+* Add more exceptions for HTTP errors - pull request #364 from @drewish - thank you!
+* Enhance the token renewal example - pull request #356 from @drewish - thank you!
+* Fix bundler versioning -  pull request #357 from @drewish - thank you!
+* Service.all returns nil if no elements exist, should return [] - pull request #358 from @vanboom - thank you!
+
+* Lots of smaller fixes and cleanup from @drewish - thank you!
+
+## 0.4.6 (2016-12-12)
+
+* Add HomeBalance field to Invoice - thank you @mhssmnn
+* Added exception handling for new 429 too many requests throttling. - thank you @stevedev
+* Add ExchangeRate basic support - thank you @larissa
+* Pass query params (e.g. requestid) with batch - thank you @drewish
+* Support batch processing and change api of RefundReceipt - thank you @arthurchui
+* Raise ThrottleExceeded when rate limited - thank you @drewish
+* Add support for line item groups, aka: Bundle - thank you @florinpatrascu
+
 ## 0.4.4 (2016-06-02)
 
 * Allow an invoice to be voided using only the Id and SyncToken - thank you @insphire

@@ -83,6 +83,62 @@ describe Quickbooks::Service::BaseService do
       expect { @service.send(:check_response, response) }.to raise_error(Quickbooks::Forbidden)
     end
 
+    it "should raise ThrottleExceeded on HTTP 403 with appropriate message" do
+      xml = fixture('throttle_exceeded_error.xml')
+
+      response = Struct.new(:code, :plain_body).new(403, xml)
+      expect { @service.send(:check_response, response) }.to raise_error(Quickbooks::ThrottleExceeded)
+    end
+
+    it "should raise NotFound on HTTP 404" do
+      html = <<-HTML
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html>
+  <head>
+    <title>404 Not Found</title>
+  </head>
+  <body>
+    <h1>Not Found</h1>
+    <p>The requested URL /v3/company/1413511890/query was not found on this server.</p>
+  </body>
+</html>
+      HTML
+
+      response = Struct.new(:code, :plain_body).new(404, html)
+      expect { @service.send(:check_response, response) }.to raise_error(Quickbooks::NotFound)
+    end
+
+    it "should raise NotFound on HTTP 404" do
+      html = <<-HTML
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html>
+  <head>
+    <title>413 Request Entity Too Large</title>
+  </head>
+  <body>
+    <h1>Request Entity Too Large</h1>
+    The requested resource<br />
+    /v3/company/123145730715194/batch<br />
+    does not allow request data with POST requests, or the amount of data provided in
+    the request exceeds the capacity limit.
+  </body>
+</html>
+      HTML
+
+      response = Struct.new(:code, :plain_body).new(413, html)
+      expect { @service.send(:check_response, response) }.to raise_error(Quickbooks::RequestTooLarge)
+    end
+
+    it "should raise TooManyRequests on HTTP 429 with appropriate message" do
+      xml = fixture('too_many_requests_error.xml')
+      message = Nokogiri::XML::Document.parse(xml) do |config|
+        config.noblanks
+      end.css('Message').text
+
+      response = Struct.new(:code, :plain_body).new(429, xml)
+      expect { @service.send(:check_response, response) }.to raise_error(Quickbooks::TooManyRequests, message)
+    end
+
     it "should raise ServiceUnavailable on HTTP 503 and 504" do
       xml = fixture('generic_error.xml')
 
