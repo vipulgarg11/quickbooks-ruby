@@ -1,3 +1,18 @@
+## 0.5.1 (2017-07-17)
+
+* Added purchase order to the list of batch request/response entities. Thank you @BitPerformanceLabs
+* Added vendor to list of supported batch request entities. Thank you @BitPerformanceLabs
+
+## 0.5.0 (2017-07-17)
+
+* Added support for Line Extras and Name Values to Payment model. This is needed to read payments against invoices.
+
+## 0.4.9 (2017-05-14)
+
+* Adding journal enteries and spec to batch request and response - pull request #380 from nathan-mots/add-journal-entries-to-bulk - thank you!
+* Add email send capability to SalesReceipt - pull request #376 from vanboom/sr_send - thank you!
+* Improve consistency of email address setter method - pull request #377 from vanboom/375 - thank you!
+
 ## 0.4.8 (2017-03-14)
 
 * Fixes from @cohendvir to resolve a regression in 0.4.7
