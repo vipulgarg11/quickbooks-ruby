@@ -48,6 +48,20 @@ describe "Quickbooks::Service::Item" do
     created_item.id.should == "2"
   end
 
+  it "can create an Item with minorversion and requestid" do
+    xml = fixture("fetch_item_by_id.xml")
+    model = Quickbooks::Model::Item
+
+    url = "#{@service.url_for_resource(model::REST_RESOURCE)}&requestid=123"
+    stub_request(:post, url, ["200", "OK"], xml)
+
+    item = Quickbooks::Model::Item.new
+    item.name = "Comfy Pillow"
+
+    created_item = @service.create(item, query: {requestid: 123})
+    created_item.id.should == "2"
+  end
+
   it "can sparse update an Item" do
     model = Quickbooks::Model::Item
     item = Quickbooks::Model::Item.new
@@ -59,7 +73,7 @@ describe "Quickbooks::Service::Item" do
     item.description = nil
 
     xml = fixture("fetch_item_by_id.xml")
-    stub_request(:post, @service.url_for_resource(model::REST_RESOURCE), ["200", "OK"], xml, true)
+    stub_request(:post, @service.url_for_resource(model::REST_RESOURCE), ["200", "OK"], xml, {}, true)
 
     update_response = @service.update(item, :sparse => true)
     update_response.name.should == 'Plush Baby Doll'
@@ -74,7 +88,7 @@ describe "Quickbooks::Service::Item" do
     item.id = 1
 
     xml = fixture("item_delete_success_response.xml")
-    stub_request(:post, @service.url_for_resource(model::REST_RESOURCE), ["200", "OK"], xml, true)
+    stub_request(:post, @service.url_for_resource(model::REST_RESOURCE), ["200", "OK"], xml, {}, true)
 
     response = @service.delete(item)
     response.active?.should be_nil
