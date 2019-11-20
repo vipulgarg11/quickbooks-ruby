@@ -1,6 +1,8 @@
 module Quickbooks
   module Model
     class Line < BaseModel
+      require 'quickbooks/model/group_line_detail'
+
       #== Constants
       SALES_ITEM_LINE_DETAIL = 'SalesItemLineDetail'
       SUB_TOTAL_LINE_DETAIL = 'SubTotalLineDetail'
@@ -8,6 +10,7 @@ module Quickbooks
       DISCOUNT_LINE_DETAIL = 'DiscountLineDetail'
       JOURNAL_ENTRY_LINE_DETAIL = 'JournalEntryLineDetail'
       TDS_LINE_DETAIL = 'TDSLineDetail'
+      GROUP_LINE_DETAIL = 'GroupLineDetail'
 
       xml_accessor :id, :from => 'Id'
       xml_accessor :line_num, :from => 'LineNum', :as => Integer
@@ -24,6 +27,7 @@ module Quickbooks
       xml_accessor :discount_line_detail, :from => 'DiscountLineDetail', :as => DiscountOverride
       xml_accessor :tds_line_detail, :from => 'TDSLineDetail', :as => TdsLineDetail
       xml_accessor :journal_entry_line_detail, :from => 'JournalEntryLineDetail', :as => JournalEntryLineDetail
+      xml_accessor :group_line_detail, :from => 'GroupLineDetail', :as => GroupLineDetail
 
       def initialize(*args)
         self.linked_transactions ||= []
@@ -80,6 +84,13 @@ module Quickbooks
         self.journal_entry_line_detail = JournalEntryLineDetail.new
 
         yield self.journal_entry_line_detail if block_given?
+      end
+
+      def group_line!
+        self.detail_type = GROUP_LINE_DETAIL
+        self.group_line_detail = GroupLineDetail.new
+
+        yield self.group_line_detail if block_given?
       end
 
       private
