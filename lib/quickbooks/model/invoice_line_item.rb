@@ -44,15 +44,14 @@ module Quickbooks
         detail_type.to_s == DISCOUNT_LINE_DETAIL
       end
 
-<<<<<<< HEAD
       def tds_item?
         detail_type.to_s == TDS_LINE_DETAIL
-=======
+      end
+
       def description_only?
         # The detail type for a description-only line detail differs slightly
         # from the node name (DescriptionOnly vs DescriptionLineDetail)
         detail_type.to_s == DESCRIPTION_DETAIL_TYPE
->>>>>>> 4ffc0b2280ba5e97cca9e7b1c3ddecb61219b0bc
       end
 
       def sales_item!
